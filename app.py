@@ -1,3 +1,5 @@
+#APP.PY
+
 import streamlit as st
 import pandas as pd
 import datetime
@@ -23,6 +25,51 @@ from modules.clustering_module import (
     elbow_method,
     find_optimal_k
 )
+
+from modules.data_processing import clean_data, encode_features
+
+def generate_cluster_summary(df, cluster_id):
+    # Step 1: Filter the cluster first (if not already filtered)
+    cluster_df = df[df['Cluster'] == cluster_id].copy()
+
+    # Step 2: Compute true stats from the raw data
+    age = cluster_df["Age"].mean() if "Age" in cluster_df.columns else None
+    income = cluster_df["Income Level"].mean() if "Income Level" in cluster_df.columns else None
+
+    # Get most common gender
+    if "Gender" in cluster_df.columns and not cluster_df["Gender"].isnull().all():
+        most_common_gender = cluster_df["Gender"].mode()[0]
+        gender_str = "Male" if most_common_gender == 1 else "Female"
+    else:
+        gender_str = "N/A"
+
+    # Online time
+    time_online = cluster_df.get("Weekend_Online_Hours", pd.Series([0])).mean()
+
+    # Step 3: Cleaned data only for interests
+    cleaned_df = clean_data(cluster_df.copy())
+
+    # Extract top interest
+    interest_columns = [col for col in cleaned_df.columns if col.startswith("Interest_")]
+    top_interest = (
+        max(interest_columns, key=lambda col: cleaned_df[col].mean(), default="N/A")
+        .replace("Interest_", "")
+        .replace("_", " ")
+        if interest_columns else "N/A"
+    )
+
+    # Step 4: Assemble the summary string
+    summary = f""" *Cluster {cluster_id} Summary*"""
+
+    summary += f"\n- Average age: *{round(age, 1)}*" if age is not None else "\n- Average age: *N/A*"
+    summary += f"\n- Avg income: *₹{income:,.2f}*" if income is not None else "\n- Avg income: *N/A*"
+    summary += f"\n- Gender: *{gender_str}*"
+    summary += f"\n- Most interested in *{top_interest}*"
+    summary += f"\n Great for *targeted campaigns* based on interest & income for *{top_interest}*!"
+
+    return summary
+
+
 
 # Streamlit page setup
 st.set_page_config(layout="wide", page_title="User Profiling Dashboard")
@@ -85,8 +132,16 @@ st.markdown("Explore, cluster, and understand user behavior to improve advertisi
 uploaded_file = st.file_uploader("Upload your cleaned user dataset (.csv)", type=["csv"])
 
 if uploaded_file:
-    df = pd.read_csv(uploaded_file)
-    st.success("✅ File uploaded successfully!")
+    raw_df = pd.read_csv(uploaded_file)
+    st.success("✔ File uploaded successfully!")
+
+    try:
+        cleaned = clean_data(raw_df)
+        df = encode_features(cleaned)
+        st.success("✔ Data cleaned & encoded successfully!")
+    except Exception as e:
+        st.error(f"✖ Error during preprocessing: {e}")
+        st.stop()
 
     if "original_df" not in st.session_state:
         st.session_state.original_df = df.copy()
@@ -101,7 +156,7 @@ if uploaded_file:
 
     # -------------------- EDA TAB --------------------
     if tab == "EDA":
-        st.header("📊 Exploratory Data Analysis")
+        st.header(" Exploratory Data Analysis")
         if st.checkbox("Show Raw Data"):
             st.write(df.head())
 
@@ -137,7 +192,7 @@ if uploaded_file:
 
     # -------------------- CLUSTERS TAB --------------------
     elif tab == "Clusters":
-        st.header("🔬 User Segmentation with KMeans")
+        st.header(" User Segmentation with KMeans")
 
         method = st.radio("Clustering Method", ["Use Elbow Method (Auto)", "Choose K Manually"])
 
@@ -159,28 +214,28 @@ if uploaded_file:
             st.session_state.clustered_df = clustered_df
             st.session_state.kmeans_model = kmeans_model
 
-            st.subheader("📉 PCA Plot")
+            st.subheader(" PCA Plot")
             plot_pca_clusters(clustered_df)
             st.image("assets/visuals/pca_clusters.png", caption="PCA Cluster Visualization")
 
-            st.subheader("📊 Cluster Summary Table")
+            st.subheader(" Cluster Summary Table")
             summary = cluster_summary_table(clustered_df)
             st.dataframe(summary)
 
-            st.subheader("🔥 Cluster Centroid Heatmap")
+            st.subheader(" Cluster Centroid Heatmap")
             plot_cluster_centroids_heatmap(kmeans_model, st.session_state.feature_names)
             for img_file in sorted(os.listdir("assets/visuals")):
                 if img_file.startswith("centroid_chunk"):
                     st.image(f"assets/visuals/{img_file}", caption=img_file)
 
-            st.subheader("📁 Preview Clustered Data")
+            st.subheader(" Preview Clustered Data")
             st.dataframe(clustered_df.head())
 
             st.download_button("Download Clustered CSV", clustered_df.to_csv(index=False), file_name="clustered_users.csv")
 
     # -------------------- PROFILES TAB --------------------
     elif tab == "Profiles":
-        st.header("🧑‍🤝‍🧑 Cluster Profiles")
+        st.header(" Cluster Profiles")
 
         if st.button("Check Clustering & Show Summary"):
             if st.session_state.clustered_df is None:
@@ -191,21 +246,27 @@ if uploaded_file:
                     _, kmeans_model, clustered_df = run_kmeans(st.session_state.original_df.copy(), optimal_k)
                     st.session_state.clustered_df = clustered_df
                     st.session_state.kmeans_model = kmeans_model
-                    st.success(f"✅ Clustering completed with K = {optimal_k}")
+                    st.success(f"✔ Clustering completed with K = {optimal_k}")
                 except Exception as e:
-                    st.error(f"❌ Clustering failed: {e}")
+                    st.error(f"✖ Clustering failed: {e}")
                     st.stop()
 
-            df_clustered = st.session_state.clustered_df
-            selected_cluster = st.selectbox("Choose a Cluster", sorted(df_clustered['Cluster'].unique()))
-            cluster_data = df_clustered[df_clustered["Cluster"] == selected_cluster]
+        df_clustered = st.session_state.clustered_df
+        available_clusters = sorted(df_clustered['Cluster'].unique())
+        selected_cluster = st.selectbox("Choose a Cluster", available_clusters)
 
-            st.subheader(f"📋 Profile Summary for Cluster {selected_cluster}")
-            st.dataframe(cluster_data.describe())
+        cluster_data = df_clustered[df_clustered["Cluster"] == selected_cluster]
 
-            st.download_button("Export Cluster Profile",
-                               cluster_data.to_csv(index=False),
-                               file_name=f"cluster_{selected_cluster}.csv")
+        st.subheader(f" Profile Summary for Cluster {selected_cluster}")
+        st.dataframe(cluster_data.describe())
+
+        summary_text = generate_cluster_summary(cluster_data, selected_cluster)
+        st.markdown(summary_text)
+
+        st.download_button("Export Cluster Profile",
+                        cluster_data.to_csv(index=False),
+                        file_name=f"cluster_{selected_cluster}.csv")
+
 
 # -------------------- FOOTER --------------------
 st.markdown("---")
@@ -217,11 +278,9 @@ We aim to support targeted ads, personalized recommendations, and behavior-based
 """)
 
 st.markdown("""
-**Team Members:**
+*Team Members:*
 - Sri Sai Lahari – [LahariRachapudi](https://github.com/LahariRachapudi)  
 - Abhishek Karthik – [Abhishek18004](https://github.com/Abhishek18004)  
 - Sai Sushanth Guddeti – [Aurus7900](https://github.com/Aurus7900)  
 - Veenasree Krishna – [Veenbeans](https://github.com/Veenbeans)
 """)
-
-st.caption(f"Last updated: {datetime.date.today().strftime('%B %d, %Y')}")

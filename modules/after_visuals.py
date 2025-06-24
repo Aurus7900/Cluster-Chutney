@@ -1,3 +1,5 @@
+#AFTER_VISUALS.PY
+
 # after_visuals.py
 
 import pandas as pd
@@ -57,7 +59,7 @@ def plot_cluster_centroids_heatmap(kmeans_model, feature_names, chunk_size=20):
 
     centroids_df = pd.DataFrame(centroids, columns=feature_names)
 
-    custom_cmap = LinearSegmentedColormap.from_list("custom_div", ['#E23A46', '#F1FAEE'])
+    custom_cmap = LinearSegmentedColormap.from_list("custom_div", ["#521a34", "#ffc4e6"])
 
     n_chunks = math.ceil(num_features / chunk_size)
 
@@ -73,8 +75,8 @@ def plot_cluster_centroids_heatmap(kmeans_model, feature_names, chunk_size=20):
             fmt=".2f",
             cmap=custom_cmap,
             center=0,
-            linewidths=0.3,
-            linecolor='gray',
+            linewidths=0.5,         # Adjusted width for better visibility
+            linecolor='white',      # <-- White grid lines here
             cbar_kws={"shrink": 0.7},
             annot_kws={"size": 8}
         )
