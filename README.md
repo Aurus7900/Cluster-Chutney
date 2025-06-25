@@ -94,16 +94,20 @@ App will open in your browser at `http://localhost:8501`.
 
 6. Clusters tab Auto - Here we Use Elbow Method (Auto)
 ![Clusters tab Auto](screenshots/Elbow_Method.png)
-7. PCA Cluster Visualization  
+
+7. Clusters tab User - Here the amount clusters can be chosen by user.
+![Clusters tab User](screenshots/User_Method.png)
+
+8. PCA Cluster Visualization  
   <img src="assets/visuals/pca_clusters.png" alt="PCA Clusters" width="400"/>
 
-8. Clusters tab Visualisations - It shows us the visualisations of the clusters in the data.
+9. Clusters tab Visualisations - It shows us the visualisations of the clusters in the data.
 ![Clusters tab Visualisations](screenshots/Cluster_Visualisations.png)
-9. Profile tab - Choosing the cluster whose summary we want to see.
+10. Profile tab - Choosing the cluster whose summary we want to see.
 ![Profile tab](screenshots/Choosing_cluster.png)
-10. Cluster wise Summary – Shows a human-readable summary of each cluster’s key traits like age, income, and interests.
+11. Cluster wise Summary – Shows a human-readable summary of each cluster’s key traits like age, income, and interests.
 ![Cluster wise Summary](screenshots/Cluster_wise_Summary.png)
-11. Footer Section – Displays team member credits and project links.
+12. Footer Section – Displays team member credits and project links.
 ![Footer Section](screenshots/Footer.png)
 
 
