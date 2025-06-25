@@ -65,7 +65,7 @@ def generate_cluster_summary(df, cluster_id):
     summary += f"\n- Avg income: *₹{income:,.2f}*" if income is not None else "\n- Avg income: *N/A*"
     summary += f"\n- Gender: *{gender_str}*"
     summary += f"\n- Most interested in *{top_interest}*"
-    summary += f"\n Great for *targeted campaigns* based on interest & income for *{top_interest}*!"
+    summary += f"\n- Great for *targeted campaigns* based on interest & income for *{top_interest}*!"
 
     return summary
 
