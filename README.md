@@ -54,7 +54,6 @@ Cluster_Chutney/
 │
 └── README.md
 ```
----
 
 ## Getting Started
 
@@ -68,6 +67,7 @@ cd Cluster-Chutney
 ### 2. Install dependencies
 
 ```bash
+.venv\Scripts\activate
 pip install -r requirements.txt
 ```
 
@@ -79,20 +79,30 @@ streamlit run app.py
 
 App will open in your browser at `http://localhost:8501`.
 
----
+## Screenshots
+1. Home Page – Shows the hero section with the title “Cluster Chutney” and dataset upload button.
+![Home Page](screenshots/Home_Page.png)
+2. Uploaded Dataset Preview – Displays a preview of the uploaded CSV file in a scrollable table.
+![Uploaded Dataset Preview](screenshots/Upload_Preview.png)
+3. EDA Visualizations – Time Spent Online (Weekday vs Weekend) visualized with clean plots.
+![Uploaded](screenshots/EDA_Visualizations.png)
+4. EDA Visualizations - Age Distribution  
+  <img src="assets/visuals/age_distribution.png" alt="Age Distribution" width="400"/>
+5. EDA Visualizations - Gender vs Top Interests  
+  <img src="assets/visuals/gender_vs_interests.png" alt="Gender vs Interests" width="400"/>
+6. Clusters tab Auto - Here we Use Elbow Method (Auto)
+![Clusters tab Auto](screenshots/Elbow_Method.png)
+7. PCA Cluster Visualization  
+  <img src="assets/visuals/pca_clusters.png" alt="PCA Clusters" width="400"/>
+8. Clusters tab Visualisations - It shows us the visualisations of the clusters in the data.
+![Clusters tab Visualisations](screenshots/Cluster_Visualisations.png)
+9. Profile tab - Choosing the cluster whose summary we want to see.
+![Profile tab](screenshots/Choosing_cluster.png)
+10. Cluster wise Summary – Shows a human-readable summary of each cluster’s key traits like age, income, and interests.
+![Cluster wise Summary](screenshots/Cluster_wise_Summary.png)
+11. Footer Section – Displays team member credits and project links.
+![Footer Section](screenshots/Footer.png)
 
-## Example Visuals
-
-### Age Distribution  
-<img src="assets/visuals/age_distribution.png" alt="Age Distribution" width="400"/>
-
-### Gender vs Top Interests  
-<img src="assets/visuals/gender_vs_interests.png" alt="Gender vs Interests" width="400"/>
-
-### PCA Cluster Visualization  
-<img src="assets/visuals/pca_clusters.png" alt="PCA Clusters" width="400"/>
-
----
 
 ## How It Works
 
@@ -131,5 +141,3 @@ App will open in your browser at `http://localhost:8501`.
 ## Inspiration
 
 Born from the need to **understand user behavior for targeted outreach**, Cluster-Chutney is a dashboard-first tool that makes data science accessible for business and marketing professionals.
-
----
