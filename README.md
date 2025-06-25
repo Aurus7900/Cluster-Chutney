@@ -88,12 +88,15 @@ App will open in your browser at `http://localhost:8501`.
 ![Uploaded](screenshots/EDA_Visualizations.png)
 4. EDA Visualizations - Age Distribution  
   <img src="assets/visuals/age_distribution.png" alt="Age Distribution" width="400"/>
+
 5. EDA Visualizations - Gender vs Top Interests  
   <img src="assets/visuals/gender_vs_interests.png" alt="Gender vs Interests" width="400"/>
+
 6. Clusters tab Auto - Here we Use Elbow Method (Auto)
 ![Clusters tab Auto](screenshots/Elbow_Method.png)
 7. PCA Cluster Visualization  
   <img src="assets/visuals/pca_clusters.png" alt="PCA Clusters" width="400"/>
+
 8. Clusters tab Visualisations - It shows us the visualisations of the clusters in the data.
 ![Clusters tab Visualisations](screenshots/Cluster_Visualisations.png)
 9. Profile tab - Choosing the cluster whose summary we want to see.
