@@ -60,7 +60,7 @@ Cluster_Chutney/
 ### 1. Clone the repository
 
 ```bash
-git clone https://github.com/Veenbeans/Cluster-Chutney.git
+git clone https://github.com/Aurus7900/Cluster-Chutney.git
 cd Cluster-Chutney
 ```
 
